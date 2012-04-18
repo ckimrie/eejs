@@ -1,0 +1,41 @@
+h1. EEJS, for ExpressionEngine
+
+EEJS is a javascript library that helps you to develop ExpressionEngine add-ons by giving 
+you easy access to EE settings and channel information from within your javascript library.
+
+Currently early in development, the aim of this library is to open up information within 
+the ExpressionEngine installation so that it can be easily consumed by JS libraries.
+
+h2. Examples:
+
+<pre>
+//EE PHP Configurations & Constants
+eejs.config('webmaster_email');             // webmaster@example.com
+eejs.action('Member', 'register_member');   // 10 
+
+//URLs
+eejs.url('foo/bar')                         // http://example.com/foo/bar/
+eejs.templateUrl('foo/bar')                 // http://example.com/index.php/foo/bar/
+eejs.actionUrl('Member', 'member_login')    // http://example.com/?ACT=15
+</pre>
+
+h2. Installation
+
+The library is packaged as an ExpressionEngine extension. 
+
+# Copy the <code>system/expressionengine/third_party/eejs</code> folder to the same 
+location in your EE installation
+# Install the extension by logging into your EE control panel and going to 
+Add-ons &rarr; Extensions and then installing the Eejs extension.
+
+
+h2. Documentation
+
+Sorry, but this is still to be done.  
+
+If you have time on your hands, or are insanely interested, you can have a look through the
+behaviour tests <code>system/expressionengine/third_party/eejs/tests/spec/EejsSpec.js</code> to see
+how the module currently works!
+
+If you're feeling super helpful you could even fork, write some documentation and submit
+a pull request!
