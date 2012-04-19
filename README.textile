@@ -8,16 +8,22 @@ the ExpressionEngine installation so that it can be easily consumed by JS librar
 
 h2. Examples:
 
-<pre>
-//EE PHP Configurations & Constants
-eejs.config('webmaster_email');             // webmaster@example.com
-eejs.action('Member', 'register_member');   // 10 
+```javascript
+eejs.config('webmaster_email'); 
+// webmaster@example.com
 
-//URLs
-eejs.url('foo/bar')                         // http://example.com/foo/bar/
-eejs.templateUrl('foo/bar')                 // http://example.com/index.php/foo/bar/
-eejs.actionUrl('Member', 'member_login')    // http://example.com/?ACT=15
-</pre>
+eejs.action('Member', 'register_member');   
+// 10 
+
+eejs.templateUrl('foo/bar')                 
+// http://example.com/index.php/foo/bar/
+
+eejs.actionUrl('Member', 'member_login')    
+// http://example.com/?ACT=15
+
+eejs.cpUrl({C:'content_edit'})              
+// http://example.com/system/index.php?S=ce589fec13376e2bfa5d058116b&D=cp&C=content_edit
+```
 
 h2. Installation
 
