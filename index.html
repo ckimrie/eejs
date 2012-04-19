@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="EEJS : An ExpressionEngine extension that provides access to EE settings and resources from client side JavaScript libraries." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>EEJS</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ckimrie/eejs">Fork Me on GitHub</a>
+
+          <h1 id="project_title">EEJS</h1>
+          <h2 id="project_tagline">An ExpressionEngine extension that provides access to EE settings and resources from client side JavaScript libraries.</h2>
+
+          <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/ckimrie/eejs/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/ckimrie/eejs/tarball/master">Download this project as a tar.gz file</a>
+          </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>EEJS is a javascript library that helps you to develop ExpressionEngine add-ons by giving 
+you easy access to EE settings and channel information from within your javascript library.</p>
+
+<p>Currently early in development, the aim of this library is to open up information within 
+the ExpressionEngine installation so that it can be easily consumed by JS libraries.</p>
+
+<h2>Examples:</h2>
+
+<div class="highlight">
+<pre>
+<span class="nx">eejs</span><span class="p">.</span><span class="nx">config</span><span class="p">(</span><span class="s1">'webmaster_email'</span><span class="p">);</span> 
+<span class="c1">// webmaster@example.com</span>
+
+<span class="nx">eejs</span><span class="p">.</span><span class="nx">action</span><span class="p">(</span><span class="s1">'Member'</span><span class="p">,</span> <span class="s1">'register_member'</span><span class="p">);</span>   
+<span class="c1">// 10 </span>
+
+<span class="nx">eejs</span><span class="p">.</span><span class="nx">templateUrl</span><span class="p">(</span><span class="s1">'foo/bar'</span><span class="p">)</span>                 
+<span class="c1">// <a href="http://example.com/index.php/foo/bar/">http://example.com/index.php/foo/bar/</a></span>
+
+<span class="nx">eejs</span><span class="p">.</span><span class="nx">actionUrl</span><span class="p">(</span><span class="s1">'Member'</span><span class="p">,</span> <span class="s1">'member_login'</span><span class="p">)</span>    
+<span class="c1">// <a href="http://example.com/?ACT=15">http://example.com/?ACT=15</a></span>
+
+<span class="nx">eejs</span><span class="p">.</span><span class="nx">cpUrl</span><span class="p">({</span><span class="nx">C</span><span class="o">:</span><span class="s1">'content_edit'</span><span class="p">})</span>              
+<span class="c1">// <a href="http://example.com/system/index.php?S=ce589fec13376e2bfa5d058116b&amp;D=cp&amp;C=content_edit">http://example.com/system/index.php?S=ce589fec13376e2bfa5d058116b&amp;D=cp&amp;C=content_edit</a></span>
+</pre>
+</div>
+
+
+<h2>Installation</h2>
+
+<p>The library is packaged as an ExpressionEngine extension. </p>
+
+<ul>
+<li>Copy the <code>system/expressionengine/third_party/eejs</code> folder to the same 
+location in your EE installation</li>
+<li>Install the extension by logging into your EE control panel and going to 
+Add-ons → Extensions and then installing the Eejs extension.</li>
+</ul><h2>Documentation</h2>
+
+<p>Sorry, but this is still to be done.  </p>
+
+<p>If you have time on your hands, or are insanely interested, you can have a look through the
+behaviour tests <code>system/expressionengine/third_party/eejs/tests/spec/EejsSpec.js</code> to see
+how the module currently works!</p>
+
+<p>If you're feeling super helpful you could even fork, write some documentation and submit
+a pull request!</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">EEJS maintained by <a href="https://github.com/ckimrie">ckimrie</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
