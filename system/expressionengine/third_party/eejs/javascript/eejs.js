@@ -1,3 +1,9 @@
+/**
+ * EEJS
+ * 
+ * A Javascript Library for retrieving ExpressionEngine settings and resources
+ * 
+ */
 (function($, EE, eejsConfig) {
 
 	var Eejs = function(a, b) {
@@ -117,8 +123,8 @@
      * 
      * Returns the action id for specified class & methods
      * 
-     * @param  {className} className    The name of the class that has registered an action
-     * @param  {methodName} methodName  The method name
+     * @param  {string} className       The name of the class that has registered an action
+     * @param  {string} methodName      The method name
      * @return {mixed}                  Returns integer or an object if the method is not specified
      */
     Eejs.fn.action = function(className, methodName) {
@@ -204,19 +210,26 @@
       * @param  {string} url The destination URL
       * @return {mixed}     
       */
-     Eejs.fn.maskedUrl = function(url) {
+    Eejs.fn.maskedUrl = function(url) {
 
         if(typeof url !== 'string'){
             return false;
         }
 
         return this.url({ URL: url});
-     }
+    }
 
 
-     Eejs.fn.cpUrl = function(value) {
+    /**
+     * Control Panel URL
+     * 
+     * @param  {object|string} value    An object to convert to a query string or a string 
+     *                                  to append to the control panel base URL
+     * @return {string}
+     */
+    Eejs.fn.cpUrl = function(value) {
         var base = this.url(this.constant('SYSDIR') + "/" + this.constant('BASE'), false);
-        
+
         if(!value){
             value = "";
         }
@@ -224,7 +237,44 @@
             return base + queryString(value, false);
         }
         return base + value;
-     }
+    }
+
+
+
+    Eejs.fn.channels = function (channel, callback, errback) {
+        var def = new $.Deferred(),
+            channel_identifier = "";
+
+        //Register callbacks
+        if(typeof callback === 'function'){
+            def.done(callback);
+        }
+        if(typeof errback === 'function'){
+            def.fail(errback);
+        }
+
+
+        //String
+        if(typeof channel === 'string'){
+            channel_identifier = "channel_name";
+        }
+
+        //Number
+        if(Number(channel) !== NaN){
+            channel_identifier = "channel_id";
+        }
+
+        
+
+
+        return def;
+    }
+    Eejs.fn.channel = Eejs.fn.channels;
+
+
+
+
+
 
 
 
@@ -261,6 +311,24 @@
 
         return queryString;
     }
+
+
+    function fetch (resourceName, data) {
+        var dfd = new $.Deferred(),
+            url = window.eejs.cpUrl({
+            C:"addons_modules", 
+            M: "show_module_cp", 
+            module: "eejs", 
+            method: "api", 
+            resource: resourceName
+        });
+
+        //TODO
+        //Fetch data via AJAX
+
+        return dfd;
+    }
+
 
 	window.eejs = new Eejs();
 })(jQuery, EE, eejsConfig);
