@@ -23,7 +23,7 @@ eejs.actionUrl('Member', 'member_login')
 
 eejs.cpUrl({C:'content_edit'})              
 // http://example.com/system/index.php?S=ce589fec13376e2bfa5d058116b&D=cp&C=content_edit
-
+</pre>
 
 h2. Installation
 
