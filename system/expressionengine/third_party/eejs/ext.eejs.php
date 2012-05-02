@@ -1,7 +1,12 @@
-<?php
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+
+
 
 class Eejs_ext {
 
+    var $name           = "EEJS";
+    var $description    = "Javascript library for accessing ExpressionEngine resources";
     var $settings       = array();
     var $settings_exist = false;
     var $docs_url       = "";
@@ -108,6 +113,41 @@ class Eejs_ext {
 
 
 
+    /**
+     * API Endpoint
+     * 
+     * ALthough this is 
+     * 
+     * @return [type] [description]
+     */
+    public function settings()
+    {
+
+        $resource = $this->EE->input->get("resource");
+        $method = $this->EE->input->get("method");
+
+        $filename = "eejs_".$resource;
+
+        if(!$resource){
+            $this->EE->output->set_status_header(400); //Bad request
+            $this->EE->output->send_ajax_response(array("error"=>"Resource not specified"));
+        }
+        if(!$method){
+            $this->EE->output->set_status_header(400); //Bad request
+            $this->EE->output->send_ajax_response(array("error"=>"Method not specified"));
+        }
+
+        $this->EE->load->add_package_path(PATH_THIRD."eejs");
+        $this->EE->load->model($filename);
+        
+        //Call the method
+        $data = $this->EE->$filename->$method();
+
+        $this->EE->output->send_ajax_response($data);
+    }
+
+
+
     public function load_js()
     {
         $this->EE->load->helper("file");
@@ -140,6 +180,9 @@ class Eejs_ext {
         foreach($actions as $row){
             $obj['actions'][$row['class']][$row['method']] = (int) $row['action_id'];
         }
+
+        //Fix the CP BASE "&amp;" -> "&"
+        $obj['constants']['BASE'] = str_replace("&amp;", "&", $obj['constants']['BASE']);
 
         //Actions
         return "var eejsConfig = ".json_encode($obj)."; \n";

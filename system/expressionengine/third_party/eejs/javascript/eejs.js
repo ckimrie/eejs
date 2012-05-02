@@ -214,8 +214,14 @@
      }
 
 
+     /**
+      * Control Panel URL
+      * 
+      * @param  {object} value  Object of key value pairs to be appended as a querystring to CP BASE
+      * @return {string}       
+      */
      Eejs.fn.cpUrl = function(value) {
-        var base = this.url(this.constant('BASE'), undefined, false)
+        var base = this.url(this.constant("SYSDIR")+'/'+this.constant('BASE'), undefined, false)
         
         if(!value){
             value = "";
@@ -227,6 +233,42 @@
      }
 
 
+     /**
+      * This needs to be able to work with and without the query argument:
+      * ie:    
+      * eejs.entries(function(entries){
+      *     
+      * })
+      */
+
+    Eejs.fn.entries = function(query, callback) {
+        var def,
+            api = $.extend(query || {}, {
+                resource: "channel",
+                method:"entries"
+            })
+
+
+        def = fetch(query, callback);
+
+        return def;
+    }
+
+
+    Eejs.fn.channels = function(query) {
+        var def,
+            api = $.extend(query || {}, {
+                resource: "channel",
+                method:"entries"
+            })
+
+
+        def = fetch(query);
+
+        def.then(function(entries) {
+            console.log(entries)
+        })
+    }
 
 
 
@@ -234,6 +276,23 @@
     * Private Methods
     */
 
+
+    function fetch (query, callback) {
+        var def,
+            api ={
+                C: "addons_extensions",
+                M: "extension_settings",
+                file: "eejs"
+            };
+
+        def = $.get(window.eejs.cpUrl($.extend(query, api)));
+
+        if(typeof callback === "function"){
+            def.then(callback);
+        }
+
+        return def;
+    }
 
 
     /**
