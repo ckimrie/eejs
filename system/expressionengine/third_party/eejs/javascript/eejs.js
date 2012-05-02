@@ -221,7 +221,8 @@
       * @return {string}       
       */
      Eejs.fn.cpUrl = function(value) {
-        var base = this.url(this.constant("SYSDIR")+'/'+this.constant('BASE'), undefined, false)
+
+        var base = this.url(this.constant("SYSDIR")+'/'+this.constant('BASE'), undefined, false);
         
         if(!value){
             value = "";

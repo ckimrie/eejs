@@ -156,14 +156,14 @@ describe("EEJS", function() {
 
     describe('CP URL method', function() {
         it('does not need any arguments', function() {
-            expect(eejs.cpUrl()).toBe('http://localhost/index.php?S=6f4df591172f8d51475e52d07ca4819c074dd3a7&amp;D=cp');
+            expect(eejs.cpUrl()).toBe('http://localhost/system/index.php?S=6f4df591172f8d51475e52d07ca4819c074dd3a7&amp;D=cp');
         });
         it('appends a string argument to the BASE url', function() {
-            expect(eejs.cpUrl('foo')).toBe('http://localhost/index.php?S=6f4df591172f8d51475e52d07ca4819c074dd3a7&amp;D=cpfoo');
+            expect(eejs.cpUrl('foo')).toBe('http://localhost/system/index.php?S=6f4df591172f8d51475e52d07ca4819c074dd3a7&amp;D=cpfoo');
         });
         it('converts an object to a query string', function() {
-            expect(eejs.cpUrl({foo: 'bar'})).toBe('http://localhost/index.php?S=6f4df591172f8d51475e52d07ca4819c074dd3a7&amp;D=cp&foo=bar');
-            expect(eejs.cpUrl({foo: 'bar', fizz: 'buzz'})).toBe('http://localhost/index.php?S=6f4df591172f8d51475e52d07ca4819c074dd3a7&amp;D=cp&foo=bar&fizz=buzz');
+            expect(eejs.cpUrl({foo: 'bar'})).toBe('http://localhost/system/index.php?S=6f4df591172f8d51475e52d07ca4819c074dd3a7&amp;D=cp&foo=bar');
+            expect(eejs.cpUrl({foo: 'bar', fizz: 'buzz'})).toBe('http://localhost/system/index.php?S=6f4df591172f8d51475e52d07ca4819c074dd3a7&amp;D=cp&foo=bar&fizz=buzz');
         })
     })
 
