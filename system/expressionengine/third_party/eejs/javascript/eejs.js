@@ -250,25 +250,22 @@
             })
 
 
-        def = fetch(query, callback);
+        def = fetch(api, callback);
 
         return def;
     }
 
 
-    Eejs.fn.channels = function(query) {
+    Eejs.fn.channels = function(query, callback) {
         var def,
             api = $.extend(query || {}, {
                 resource: "channel",
                 method:"entries"
             })
 
+        def = fetch(api, callback);
 
-        def = fetch(query);
-
-        def.then(function(entries) {
-            console.log(entries)
-        })
+        return def;
     }
 
 

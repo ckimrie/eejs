@@ -12,9 +12,9 @@ class Eejs_channel extends Eejs_abstract
 {
     var $EE;
 
-
     public function entries()
-    {
+    {   
+
         return $this->EE->db->get("channel_titles")->result_array();
     }
 
