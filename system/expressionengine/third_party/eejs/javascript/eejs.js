@@ -1,3 +1,9 @@
+/**
+ * EEJS
+ * 
+ * A Javascript Library for retrieving ExpressionEngine settings and resources
+ * 
+ */
 (function($, EE, eejsConfig) {
 
 	var Eejs = function(a, b) {
@@ -117,8 +123,8 @@
      * 
      * Returns the action id for specified class & methods
      * 
-     * @param  {className} className    The name of the class that has registered an action
-     * @param  {methodName} methodName  The method name
+     * @param  {string} className       The name of the class that has registered an action
+     * @param  {string} methodName      The method name
      * @return {mixed}                  Returns integer or an object if the method is not specified
      */
     Eejs.fn.action = function(className, methodName) {
@@ -204,69 +210,170 @@
       * @param  {string} url The destination URL
       * @return {mixed}     
       */
-     Eejs.fn.maskedUrl = function(url) {
+    Eejs.fn.maskedUrl = function(url) {
 
         if(typeof url !== 'string'){
             return false;
         }
 
         return this.url({ URL: url});
-     }
+    }
 
 
-     /**
-      * Control Panel URL
-      * 
-      * @param  {object} value  Object of key value pairs to be appended as a querystring to CP BASE
-      * @return {string}       
-      */
-     Eejs.fn.cpUrl = function(value) {
+    /**
+     * Control Panel URL
+     * 
+     * @param  {object|string} value    An object to convert to a query string or a string 
+     *                                  to append to the control panel base URL
+     * @return {string}
+     */
+    Eejs.fn.cpUrl = function(value) {
+        var base = this.url(this.constant('SYSDIR') + "/" + this.constant('BASE'), false);
 
-        var base = this.url(this.constant("SYSDIR")+'/'+this.constant('BASE'), undefined, false);
-        
         if(!value){
             value = "";
         }
         if(typeof value === 'object'){
             return base + queryString(value, false);
         }
+        console.log(arguments)
         return base + value;
-     }
+    }
 
 
-     /**
-      * This needs to be able to work with and without the query argument:
-      * ie:    
-      * eejs.entries(function(entries){
-      *     
-      * })
-      */
 
-    Eejs.fn.entries = function(query, callback) {
-        var def,
-            api = $.extend(query || {}, {
-                resource: "channel",
-                method:"entries"
-            })
+    Eejs.fn.channels = function (/* channelArg, callbackArg, errbackArg */) {
+        var def = new $.Deferred(),
+            config = {},
+            channel_identifier = "",
+            channel,
+            callback,
+            errback,
+            args = parseArguments(arguments);
+
+        //Register callbacks
+        if(args.callback){
+            def.done(args.callback);
+        }
+        if(args.errback){
+            def.fail(args.errback);
+        }
 
 
-        def = fetch(api, callback);
+        //String
+        if(typeof args.channel === 'string'){
+            channel_identifier = "channel_name";
+        }
+
+        //Number
+        else if(Number(args.channel) !== NaN){
+            channel_identifier = "channel_id";
+        }
+
+        if(args.channel !== null){
+            config[channel_identifier] = args.channel;
+        }
+
+        fetch("channels", config).then(function(data) {
+            def.resolve(data)
+        })
+        
+
+
+        return def;
+    }
+    Eejs.fn.channel = Eejs.fn.channels;
+
+
+    Eejs.fn.entries = function (/* channelArg, callbackArg, errbackArg */) {
+        var def = new $.Deferred(),
+            config = {},
+            channel_identifier = "",
+            channel,
+            callback,
+            errback,
+            args = parseArguments(arguments);
+
+        //Register callbacks
+        if(args.callback){
+            def.done(args.callback);
+        }
+        if(args.errback){
+            def.fail(args.errback);
+        }
+
+
+        //String
+        if(typeof args.channel === 'string'){
+            channel_identifier = "channel_name";
+        }
+
+        //Number
+        else if(Number(args.channel) !== NaN){
+            channel_identifier = "channel_id";
+        }
+
+        if(args.channel !== null){
+            config[channel_identifier] = args.channel;
+        }
+
+        fetch("entries", config).then(function(data) {
+            def.resolve(data)
+        })
+        
+
 
         return def;
     }
 
 
-    Eejs.fn.channels = function(query, callback) {
-        var def,
-            api = $.extend(query || {}, {
-                resource: "channel",
-                method:"entries"
-            })
 
-        def = fetch(api, callback);
+    Eejs.fn.entry = function (/* entryId, callbackArg, errbackArg */) {
+        var def = new $.Deferred(),
+            config = {},
+            channel_identifier = "",
+            channel,
+            callback,
+            errback,
+            args = parseArguments(arguments);
+
+        //Register callbacks
+        if(args.callback){
+            def.done(args.callback);
+        }
+        if(args.errback){
+            def.fail(args.errback);
+        }
+
+
+        //String
+        if(typeof args.channel === 'string'){
+            channel_identifier = "channel_name";
+        }
+
+        //Number
+        else if(Number(args.channel) !== NaN){
+            channel_identifier = "entry_id";
+        }
+
+        if(args.channel !== null){
+            config[channel_identifier] = args.channel;
+        }
+
+        fetch("entry", config).then(function(data) {
+            def.resolve(data)
+        })
+        
+
 
         return def;
     }
+
+
+
+
+
+
 
 
 
@@ -274,23 +381,6 @@
     * Private Methods
     */
 
-
-    function fetch (query, callback) {
-        var def,
-            api ={
-                C: "addons_extensions",
-                M: "extension_settings",
-                file: "eejs"
-            };
-
-        def = $.get(window.eejs.cpUrl($.extend(query, api)));
-
-        if(typeof callback === "function"){
-            def.then(callback);
-        }
-
-        return def;
-    }
 
 
     /**
@@ -318,6 +408,88 @@
 
         return queryString;
     }
+
+
+
+    function parseArguments (args) {
+        var o = {
+            channel : null,
+            callback: null,
+            errback: null
+        };
+
+        if(args.length === 0){
+            
+            return o;
+
+        } else if ( args.length === 1){
+            if(typeof args[0] === "string" || typeof Number(args[0]) === "number"){
+                o.channel = args[0];
+            }
+            else if (typeof args[0] === "function"){
+                o.callback = args[0];
+            }
+            else {
+                console.error("Invalid argument. Must be a string, number or callback function");
+            }
+        }
+
+        if(args.length === 2){
+            if((typeof args[0] === "string" || typeof Number(args[0]) === "number") && typeof args[1] === "function"){
+                o.channel = args[0];
+                o.callback = args[1];
+            }
+            else if ( typeof arguments[0] === "function" && typeof args[1] === "function"){
+                o.callback = args[0]
+                o.errback = args[0]
+            } else {
+                console.error("Invalid arguments. Must be a string or number followed by a callback function."
+                + " Alternatively you can supply two functions as arguments for callback and errback");   
+            }
+        }
+
+        if(args.length >= 3){
+            if((typeof args[0] === "string" || typeof Number(args[0]) === "number") || typeof args[1] === "function" ||  typeof args[2] === "function"){
+                o.channel = args[0];
+                o.callback = args[1];
+                o.errback = args[1];
+            } else {
+                console.error("Invalid arguments. Must be a string or number followed by a callback function and an errback function.");   
+            }
+        }
+
+        return o;
+    }
+
+
+    function fetch (resourceName, data) {
+        var dfd = new $.Deferred(),
+            url = eejs.cpUrl({
+                C:"addons_extensions", 
+                M: "extension_settings", 
+                file: "eejs",
+                method: "api", 
+                resource: resourceName
+            });
+            
+           // http://ee240/system/index.php?S=0caa14e3b5a17a25c3b911ac23a1a91ce2e8e1e3&D=cp&C=addons_extensions&M=extension_settings&file=safecracker
+
+        url += queryString(data, false);
+
+        $.get(url, function(data, status, jQDeferred) {          
+            if(typeof data === "object" && status == "success"){
+                dfd.resolve(data);
+            }else{
+                dfd.reject(data);
+            }
+        })
+
+        //TODO
+        //Fetch data via AJAX
+
+        return dfd;
+    }
+
 
 	window.eejs = new Eejs();
 })(jQuery, EE, eejsConfig);

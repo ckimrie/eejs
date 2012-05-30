@@ -1,12 +1,10 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined("BASEPATH")) die("No direct script access allowed");
 
-
-
+$extension_name = "EEJS";
 
 class Eejs_ext {
 
-    var $name           = "EEJS";
-    var $description    = "Javascript library for accessing ExpressionEngine resources";
+    
     var $settings       = array();
     var $settings_exist = false;
     var $docs_url       = "";
@@ -76,26 +74,7 @@ class Eejs_ext {
     );
 
 
-    var $constantKeys = array(
-        "SYSDIR"            => SYSDIR,
-        "APP_NAME"          => APP_NAME,
-        "APP_VER"           => APP_VER,
-        "APP_BUILD"         => APP_BUILD,
-        "CI_VERSION"        => CI_VERSION,
-        "BASE"              => BASE,
-        "AMP"               => AMP,
-        "QUERY_MARKER"      => QUERY_MARKER,
-        "URL_THIRD_THEMES"  => URL_THIRD_THEMES,
-        "NBS"               => NBS,
-        "BR"                => BR,
-        "NL"                => NL,
-        "LD"                => LD,
-        "RD"                => RD,
-        "DEBUG"             => DEBUG,
-        "EXT"               => EXT,
-        "UTF8_ENABLED"      => UTF8_ENABLED,
-        "MB_ENABLED"        => MB_ENABLED
-    );
+    var $constantKeys = array();
 
 
     /**
@@ -109,41 +88,31 @@ class Eejs_ext {
 
         $this->settings = $settings;
 
-    }
 
 
 
-    /**
-     * API Endpoint
-     * 
-     * ALthough this is 
-     * 
-     * @return [type] [description]
-     */
-    public function settings()
-    {
 
-        $resource = $this->EE->input->get("resource");
-        $method = $this->EE->input->get("method");
+        $this->constantKeys = array(
+            "BASE"            => BASE,
+            "SYSDIR"            => SYSDIR,
+            "APP_NAME"          => APP_NAME,
+            "APP_VER"           => APP_VER,
+            "APP_BUILD"         => APP_BUILD,
+            "CI_VERSION"        => CI_VERSION,
+            "AMP"               => AMP,
+            "QUERY_MARKER"      => QUERY_MARKER,
+            "URL_THIRD_THEMES"  => URL_THIRD_THEMES,
+            "NBS"               => NBS,
+            "BR"                => BR,
+            "NL"                => NL,
+            "LD"                => LD,
+            "RD"                => RD,
+            "DEBUG"             => DEBUG,
+            "EXT"               => EXT,
+            "UTF8_ENABLED"      => UTF8_ENABLED,
+            "MB_ENABLED"        => MB_ENABLED
+        );
 
-        $filename = "eejs_".$resource;
-
-        if(!$resource){
-            $this->EE->output->set_status_header(400); //Bad request
-            $this->EE->output->send_ajax_response(array("error"=>"Resource not specified"));
-        }
-        if(!$method){
-            $this->EE->output->set_status_header(400); //Bad request
-            $this->EE->output->send_ajax_response(array("error"=>"Method not specified"));
-        }
-
-        $this->EE->load->add_package_path(PATH_THIRD."eejs");
-        $this->EE->load->model($filename);
-        
-        //Call the method
-        $data = $this->EE->$filename->$method();
-
-        $this->EE->output->send_ajax_response($data);
     }
 
 
@@ -169,6 +138,10 @@ class Eejs_ext {
             $obj['constants'][$key] = $value;
         }
 
+        //Replace &amp; -> & in BASE
+        $obj['constants']['BASE'] = str_replace("&amp;", "&", $obj['constants']['BASE']);
+        
+
         //EE Config Variables
         $obj['config'] = array();
         foreach($this->configKeys as $key){
@@ -180,9 +153,6 @@ class Eejs_ext {
         foreach($actions as $row){
             $obj['actions'][$row['class']][$row['method']] = (int) $row['action_id'];
         }
-
-        //Fix the CP BASE "&amp;" -> "&"
-        $obj['constants']['BASE'] = str_replace("&amp;", "&", $obj['constants']['BASE']);
 
         //Actions
         return "var eejsConfig = ".json_encode($obj)."; \n";
@@ -231,5 +201,55 @@ class Eejs_ext {
             array('version' => $this->version)
         );
     }
+
+
+    public function settings()
+    {
+        $resource = $this->EE->input->get("resource");
+        $data = $this->$resource();
+
+        $this->EE->output->send_ajax_response($data);
+    }
+
+
+
+    private function channels()
+    {
+        if($this->EE->input->get("channel_name")){
+            $this->EE->db->where("channel_name", $this->EE->input->get("channel_name"));
+        }
+
+        if($this->EE->input->get("channel_id")){
+            $this->EE->db->where("channel_id", $this->EE->input->get("channel_id"));
+        }
+        return $this->EE->db->get("channels")->result_array();
+    }
+
+
+    private function entries()
+    {
+        $this->EE->db->select("channel_titles.*");
+
+        if($this->EE->input->get("channel_name")){
+            $this->EE->db->where("channels.channel_name", $this->EE->input->get("channel_name"));
+        }
+
+        if($this->EE->input->get("channel_id")){
+            $this->EE->db->where("channels.channel_id", $this->EE->input->get("channel_id"));
+        }
+
+        $this->EE->db->from("channel_titles");
+        $this->EE->db->join("channels", "channels.channel_id = channel_titles.channel_id");
+        return $this->EE->db->get()->result_array();
+    }
+
+
+    private function entry()
+    {
+    
+        $this->EE->db->where("entry_id", $this->EE->input->get("entry_id"));
+        return $this->EE->db->get("channel_titles")->result_array();
+    }
+
 }
 // END CLASS

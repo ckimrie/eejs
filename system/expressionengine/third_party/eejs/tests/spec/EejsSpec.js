@@ -12,6 +12,11 @@ describe("EEJS", function() {
 
     describe("Config method", function() {
 
+        it("method exists", function() {
+            expect(eejs.config).toBeDefined()
+            expect(typeof eejs.config === "function").toBeTruthy()
+        });
+
         it("returns an object when no argument is supplied", function() {
         expect(typeof eejs.config() == "object").toBe(true);
             expect(eejs.config().site_url).toBeDefined();
@@ -26,6 +31,11 @@ describe("EEJS", function() {
     });
 
     describe("Constants method", function() {
+
+        it("exists", function() {
+            expect(eejs.constant).toBeDefined()
+            expect(typeof eejs.constant === "function").toBeTruthy()
+        });
 
         it("returns an object when no argument is supplied", function() {
             expect(typeof eejs.constant() == "object").toBe(true);
@@ -48,6 +58,11 @@ describe("EEJS", function() {
      */
 
     describe("URL Method", function() {
+
+        it("exists", function() {
+            expect(eejs.url).toBeDefined()
+            expect(typeof eejs.url === "function").toBe(true);
+        })
 
         it("returns the site url when no arguments are supplied", function() {
             expect(eejs.url()).toBe("http://localhost/");
